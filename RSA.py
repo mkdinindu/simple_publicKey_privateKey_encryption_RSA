@@ -37,12 +37,12 @@ def checkAuth(cipheredAuthed, public_key):
 if __name__ == "__main__":
 
     #peer A
-    prime1A = 19
-    prime2A = 23
+    prime1A = 17
+    prime2A = 19
 
     #peer B 
-    prime1B = 17
-    prime2B = 19
+    prime1B = 5
+    prime2B = 7
 
     #peer A 
     pub_keyA, priv_keyA = generateKey(prime1A, prime2A)
