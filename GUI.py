@@ -1,7 +1,8 @@
-import tkinter as tk 
-from tkinter import ttk 
+import tkinter as tk
+from tkinter import ttk
 
 from RSA import *
+
 
 def run_rsa():
     pA = int(entry_pA.get())
@@ -62,95 +63,128 @@ def run_rsa_real():
 
 def toggle_mode():
     if checkbox_var.get():
-        # Checkbox is checked: Change labels and unlock the decrypt button
         lbl_title_pA.config(text="Your prime 1")
         lbl_title_qA.config(text="Your prime 2")
         lbl_title_pB.config(text="Reciever's public key 'e' value")
         lbl_title_qB.config(text="Reciever's public key 'n' value")
         
-        btn_decrypt.config(state=tk.NORMAL)  # Unlock button
+        btn_decrypt.config(state=tk.NORMAL)
     else:
-        # Checkbox is unchecked: Revert labels and lock the decrypt button
         lbl_title_pA.config(text="Peer A prime 1")
         lbl_title_qA.config(text="Peer A prime 2")
         lbl_title_pB.config(text="Peer B prime 1")
         lbl_title_qB.config(text="Peer B prime 2")
         
-        btn_decrypt.config(state=tk.DISABLED)  # Lock button
+        btn_decrypt.config(state=tk.DISABLED)
+
 
 root = tk.Tk()
-root.title("RSA encryptor")
-root.geometry("500x400")
+root.title("RSA Encryption & Authentication")
+root.geometry("560x620")
+root.resizable(False, False)
+
+style = ttk.Style()
+style.configure("Title.TLabel", font=("Segoe UI", 12, "bold"))
+style.configure("Section.TLabelframe", font=("Segoe UI", 10, "bold"))
+style.configure("Result.TLabel", font=("Segoe UI", 9))
+style.configure("Action.TButton", font=("Segoe UI", 10, "bold"), padding=6)
+
+header = ttk.Label(root, text="RSA Encryption & Authentication Tool", style="Title.TLabel")
+header.pack(pady=(12, 4))
+
+sep = ttk.Separator(root, orient="horizontal")
+sep.pack(fill="x", padx=10, pady=(0, 8))
+
+main_frame = ttk.Frame(root)
+main_frame.pack(fill="both", expand=True, padx=12, pady=0)
+
+input_frame = ttk.LabelFrame(main_frame, text="Keys & Message Input", style="Section.TLabelframe")
+input_frame.pack(fill="x", pady=(0, 8))
+
+frameA = ttk.LabelFrame(input_frame, text="Sender (Peer A) — Your Keys", padding=8)
+frameA.grid(row=0, column=0, padx=6, pady=6, sticky="nsew")
+
+lbl_title_pA = ttk.Label(frameA, text="Prime 1 (p)")
+lbl_title_pA.grid(row=0, column=0, sticky="w", padx=(0, 4))
+entry_pA = ttk.Entry(frameA, width=18)
+entry_pA.grid(row=0, column=1)
+
+lbl_title_qA = ttk.Label(frameA, text="Prime 2 (q)")
+lbl_title_qA.grid(row=1, column=0, sticky="w", padx=(0, 4), pady=(4, 0))
+entry_qA = ttk.Entry(frameA, width=18)
+entry_qA.grid(row=1, column=1, pady=(4, 0))
+
+frameB = ttk.LabelFrame(input_frame, text="Recipient (Peer B)", padding=8)
+frameB.grid(row=0, column=1, padx=6, pady=6, sticky="nsew")
+
+lbl_title_pB = ttk.Label(frameB, text="Prime 1 (p)")
+lbl_title_pB.grid(row=0, column=0, sticky="w", padx=(0, 4))
+entry_pB = ttk.Entry(frameB, width=18)
+entry_pB.grid(row=0, column=1)
+
+lbl_title_qB = ttk.Label(frameB, text="Prime 2 (q)")
+lbl_title_qB.grid(row=1, column=0, sticky="w", padx=(0, 4), pady=(4, 0))
+entry_qB = ttk.Entry(frameB, width=18)
+entry_qB.grid(row=1, column=1, pady=(4, 0))
+
+input_frame.columnconfigure(0, weight=1)
+input_frame.columnconfigure(1, weight=1)
+
+msg_frame = ttk.LabelFrame(main_frame, text="Message", padding=6)
+msg_frame.pack(fill="x", pady=(0, 6))
+
+lbl_msg = ttk.Label(msg_frame, text="Plaintext (numeric):")
+lbl_msg.pack(side="left", padx=(0, 6))
+entry_msg = ttk.Entry(msg_frame, width=30)
+entry_msg.pack(side="left")
+
+entry_pA.insert(0, "17")
+entry_qA.insert(0, "19")
+entry_pB.insert(0, "5")
+entry_qB.insert(0, "7")
+entry_msg.insert(0, "9")
+
+mode_frame = ttk.LabelFrame(main_frame, text="Mode", padding=6)
+mode_frame.pack(fill="x", pady=(0, 8))
 
 checkbox_var = tk.BooleanVar()
-chk_toggle = tk.Checkbutton(
-    root, 
-    text="Start an encrypted chat with one of ur bitches, enter their public key pair to belowmost 2 textboxes", 
-    variable=checkbox_var, 
+chk_toggle = ttk.Checkbutton(
+    mode_frame,
+    text="Decryption mode — use Recipient's public key (e, n) instead of generating from primes",
+    variable=checkbox_var,
     command=toggle_mode
 )
-chk_toggle.pack(pady=5)
+chk_toggle.pack(anchor="w")
 
+action_frame = ttk.Frame(main_frame)
+action_frame.pack(fill="x", pady=(0, 8))
 
-lbl_title_pA = tk.Label(root, text="Peer A prime 1")
-lbl_title_pA.pack()
-entry_pA = tk.Entry(root)
-entry_pA.pack()
+btn_run = ttk.Button(action_frame, text="Encrypt & Sign", command=run_rsa, style="Action.TButton")
+btn_run.pack(side="left", padx=(0, 8))
 
-lbl_title_qA = tk.Label(root, text="Peer A prime 2")
-lbl_title_qA.pack()
-entry_qA = tk.Entry(root)
-entry_qA.pack()
+btn_decrypt = ttk.Button(action_frame, text="Decrypt", command=run_rsa_real, state=tk.DISABLED, style="Action.TButton")
+btn_decrypt.pack(side="left")
 
-lbl_title_pB = tk.Label(root, text="Peer B prime 1")
-lbl_title_pB.pack()
-entry_pB = tk.Entry(root)
-entry_pB.pack()
+sep2 = ttk.Separator(main_frame, orient="horizontal")
+sep2.pack(fill="x", pady=(0, 6))
 
-lbl_title_qB = tk.Label(root, text="Peer B prime 2")
-lbl_title_qB.pack()
-entry_qB = tk.Entry(root)
-entry_qB.pack()
+result_frame = ttk.LabelFrame(main_frame, text="Results", padding=8)
+result_frame.pack(fill="both", expand=True)
 
-tk.Label(root, text="Message to encrypt").pack()
-entry_msg = tk.Entry(root)
-entry_msg.pack()
+lbl_pubA = ttk.Label(result_frame, style="Result.TLabel")
+lbl_privA = ttk.Label(result_frame, style="Result.TLabel")
 
+lbl_pubB = ttk.Label(result_frame, style="Result.TLabel")
+lbl_privB = ttk.Label(result_frame, style="Result.TLabel")
 
-entry_pA.insert(0,"17")
-entry_qA.insert(0,"19")
+lbl_cipher = ttk.Label(result_frame, style="Result.TLabel")
+lbl_auth = ttk.Label(result_frame, style="Result.TLabel")
+lbl_checked = ttk.Label(result_frame, style="Result.TLabel")
+lbl_decrypted = ttk.Label(result_frame, style="Result.TLabel")
 
-entry_pB.insert(0,"5")
-entry_qB.insert(0,"7")
-
-entry_msg.insert(0,"9")
-
-
-
-# 3. Action Buttons
-btn_run = tk.Button(root, text="Run RSA", command=run_rsa)
-btn_run.pack(pady=2)
-
-# Decrypt button starts locked (DISABLED)
-btn_decrypt = tk.Button(root, text="decrypt", command=run_rsa_real, state=tk.DISABLED)
-btn_decrypt.pack(pady=2)
-
-lbl_pubA = tk.Label(root)
-lbl_privA = tk.Label(root)
-
-lbl_pubB = tk.Label(root)
-lbl_privB = tk.Label(root)
-
-lbl_cipher = tk.Label(root)
-lbl_auth = tk.Label(root)
-lbl_checked = tk.Label(root)
-lbl_decrypted = tk.Label(root)
-
-
-for l in [lbl_pubA,lbl_privA,lbl_pubB,lbl_privB,
-          lbl_cipher,lbl_auth,lbl_checked,lbl_decrypted]:
-    l.pack()
+for l in [lbl_pubA, lbl_privA, lbl_pubB, lbl_privB,
+          lbl_cipher, lbl_auth, lbl_checked, lbl_decrypted]:
+    l.pack(anchor="w", pady=1)
 
 
 root.mainloop()
-    
