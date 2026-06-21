@@ -2,6 +2,9 @@
 
 An educational Python implementation of RSA public-key cryptography and digital signatures, featuring a graphical user interface built with `tkinter`.
 
+<img width="621" height="697" alt="image" src="https://github.com/user-attachments/assets/d804c6a1-35f8-41bd-b83b-5adadce97b63" />
+
+
 ## Features
 
 - **RSA Key Generation** — Generates public/private key pairs from any two prime numbers
